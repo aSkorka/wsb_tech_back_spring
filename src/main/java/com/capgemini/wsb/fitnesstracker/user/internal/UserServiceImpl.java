@@ -1,0 +1,63 @@
+package com.capgemini.wsb.fitnesstracker.user.internal;
+
+import com.capgemini.wsb.fitnesstracker.user.api.User;
+import com.capgemini.wsb.fitnesstracker.user.api.UserProvider;
+import com.capgemini.wsb.fitnesstracker.user.api.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+class UserServiceImpl implements UserService, UserProvider {
+
+    private final UserRepository userRepository;
+
+    @Override
+    public User createUser(final User user) {
+        log.info("Creating User {}", user);
+        if (user.getId() != null) {
+            throw new IllegalArgumentException("User has already DB ID, update is not permitted!");
+        }
+        return userRepository.save(user);
+    }
+
+
+    @Override
+    public Optional<User> getUser(final Long userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
+    public Optional<User> getUserByEmail(final String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public void deleteUser(final long id) {
+        if (userRepository.existsById(id)) {
+            User user = userRepository.getReferenceById(id);
+            userRepository.delete(user);
+        } else {
+            throw new RuntimeException("User with id " + id + " not found");
+        }
+    }
+    public List<User> getOlderThen(final int age) {
+        return userRepository.findOlder(age);
+    }
+
+    public void updateUser(long id, String newName) {
+        User user = userRepository.getReferenceById(id);
+        user.setName(newName);
+    }
+
+
+}
