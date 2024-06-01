@@ -4,8 +4,11 @@ import com.capgemini.wsb.fitnesstracker.training.api.Training;
 import com.capgemini.wsb.fitnesstracker.training.api.TrainingProvider;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import com.capgemini.wsb.fitnesstracker.user.internal.UserRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +18,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TrainingServiceImpl implements TrainingProvider {
-
+    private final UserRepository userRepository;
     private final TrainingRepository trainingRepository;
     @Override
-    public Optional<User> getTraining(final Long trainingId) {
-        throw new UnsupportedOperationException("Not finished yet");
+    public Training getTraining(final Long trainingId) {
+        return trainingRepository.getReferenceById(trainingId);
     }
 
     @Override
@@ -37,21 +40,34 @@ public class TrainingServiceImpl implements TrainingProvider {
         if(training.getId() != null) {
             throw new IllegalArgumentException("Training has already DB ID, update is not permitted!");
         }
+        User user = training.getUser();
+        if (user.getId() == null) {
+            userRepository.save(user);
+        }
         return trainingRepository.save(training);
     }
 
     @Override
-    public List<Training> getFinishedTrainings(Date finishData) {
-        return trainingRepository.findAll().stream().filter(training -> training.getEndTime().after(finishData)).collect(Collectors.toList());
+    public List<Training> getFinishedTrainings(Date date) {
+        return trainingRepository.findAll().stream().filter(training -> training.getEndTime().compareTo(date) > 0).toList();
     }
 
     @Override
     public List<Training> getAllTrainingTypes(ActivityType activity) {
         return trainingRepository.findAll().stream().filter(training -> training.getActivityType().equals(activity)).collect(Collectors.toList());
     }
+    @PutMapping("/v1/trainings/{trainingId}")
     public void updateActivity(long id, ActivityType newActivityType) {
         Training training = trainingRepository.getReferenceById(id);
         training.setActivityType(newActivityType);
+    }
+    public void removeTraining(long userId) {
+        List<Training> trainings = trainingRepository.findAll().stream().filter(training -> training.getUser().getId().equals(userId)).toList();
+        trainingRepository.deleteAll(trainings);
+    }
+
+    public Training upgradeTraining(Training training) {
+        return trainingRepository.save(training);
     }
     }
 

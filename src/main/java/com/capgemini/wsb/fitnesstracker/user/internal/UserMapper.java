@@ -14,15 +14,28 @@ public class UserMapper {
                            user.getEmail());
     }
 
-    public User toEntity(UserDto userDto) {
+    public User toEntity(UserDto user) {
         return new User(
+                user.firstName(),
+                user.lastName(),
+                user.birthdate(),
+                user.email());
+    }
+    SimpleUserDto toSimpleDto(User user) {
+        return new SimpleUserDto(user.getId(), user.getFirstName(), user.getLastName());
+    }
+
+    EmailDto toEmailDto(User user) {
+        return new EmailDto(user.getId(),
+                user.getEmail());
+    }
+
+    public User updateToEntity(UserDto userDto, Long id) {
+        return new User(
+                id,
                 userDto.firstName(),
                 userDto.lastName(),
                 userDto.birthdate(),
                 userDto.email());
     }
-    SimpleUserDto toSimpleDto(User user) {
-        return new SimpleUserDto(user.getId(), user.getFirstName());
-    }
-
 }

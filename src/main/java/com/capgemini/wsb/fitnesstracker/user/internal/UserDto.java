@@ -9,5 +9,6 @@ public record UserDto(@Nullable Long Id, String firstName, String lastName,
                       @JsonFormat(pattern = "yyyy-MM-dd") LocalDate birthdate,
                       String email) {
 }
-record SimpleUserDto(@Nullable Long id, String firstName){
+record SimpleUserDto(@Nullable Long id, String firstName,String lastName){
 }
+record EmailDto(Long id, String email) {}

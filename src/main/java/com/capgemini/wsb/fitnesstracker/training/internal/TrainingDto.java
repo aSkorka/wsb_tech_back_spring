@@ -1,8 +1,6 @@
 package com.capgemini.wsb.fitnesstracker.training.internal;
 
-import com.capgemini.wsb.fitnesstracker.user.api.User;
-import com.capgemini.wsb.fitnesstracker.user.api.UserDto;
-import jakarta.persistence.*;
+import com.capgemini.wsb.fitnesstracker.user.internal.UserDto;
 import lombok.Data;
 
 import java.util.Date;

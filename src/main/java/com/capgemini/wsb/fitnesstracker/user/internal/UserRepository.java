@@ -1,6 +1,7 @@
 package com.capgemini.wsb.fitnesstracker.user.internal;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * Query searching users by email address. It matches by exact match.
@@ -29,8 +30,8 @@ interface UserRepository extends JpaRepository<User, Long> {
         return Period.between(birthdate,now).getYears();
     }
 
-    default List<User> findOlder(int age){
-        return findAll().stream().filter(user -> calcAge(user.getBirthdate()) > age).toList();
+    default List<User> findOlder(LocalDate date){
+        return findAll().stream().filter(user -> user.getBirthdate().isBefore(date)).toList();
     }
 
 }

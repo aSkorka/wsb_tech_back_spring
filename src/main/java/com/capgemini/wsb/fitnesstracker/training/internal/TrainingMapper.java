@@ -1,9 +1,7 @@
 package com.capgemini.wsb.fitnesstracker.training.internal;
-import com.capgemini.wsb.fitnesstracker.user.api.User;
-import com.capgemini.wsb.fitnesstracker.user.internal.UserDto;
 import com.capgemini.wsb.fitnesstracker.user.internal.UserMapper;
 import com.capgemini.wsb.fitnesstracker.training.api.Training;
-
+import com.capgemini.wsb.fitnesstracker.user.api.User;
 
 
 import lombok.RequiredArgsConstructor;
@@ -17,6 +15,7 @@ public class TrainingMapper {
     TrainingDto toDto(Training training) {
 
         TrainingDto trainingDto = new TrainingDto();
+
         trainingDto.setId(training.getId());
         trainingDto.setUser(userMapper.toDto(training.getUser()));
         trainingDto.setAverageSpeed(training.getAverageSpeed());
@@ -35,5 +34,15 @@ public class TrainingMapper {
                 trainingDto.getDistance(),
                 trainingDto.getAverageSpeed()
         );
+    }
+
+    Training toUpgradeTraining(TrainingUpgradeDto trainingDto, User user, Long id) {
+        return new Training(id,
+                user,
+                trainingDto.startTime(),
+                trainingDto.endTime(),
+                trainingDto.activityType(),
+                trainingDto.distance(),
+                trainingDto.averageSpeed());
     }
 }

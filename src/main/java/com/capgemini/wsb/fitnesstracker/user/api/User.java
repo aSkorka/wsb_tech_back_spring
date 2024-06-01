@@ -33,6 +33,14 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    public User(Long id, String firstName, String lastName, LocalDate birthdate, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthdate = birthdate;
+        this.email = email;
+    }
+
     public void setName(String firstName) {
         this.firstName = firstName;
     }
@@ -51,6 +59,7 @@ public class User {
         this.id = id;
         this.firstName = firstName;
     }
+
 }
 
 
